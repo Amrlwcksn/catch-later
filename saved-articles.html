@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Artikel Tersimpan - Article Saver</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 30px;
+    }
+    
+    .header h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    
+    .header p {
+      font-size: 18px;
+      opacity: 0.9;
+    }
+    
+    .search-bar {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 30px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.9);
+      outline: none;
+    }
+    
+    .search-input::placeholder {
+      color: #666;
+    }
+    
+    .articles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .article-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .article-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .article-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .article-excerpt {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 15px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .article-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 15px;
+    }
+    
+    .article-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+    
+    .btn-primary {
+      background: #4CAF50;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #45a049;
+    }
+    
+    .btn-danger {
+      background: #f44336;
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background: #da190b;
+    }
+    
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background: #545b62;
+    }
+    
+    .empty-state {
+      text-align: center;
+      color: white;
+      padding: 60px 20px;
+    }
+    
+    .empty-state h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      opacity: 0.9;
+    }
+    
+    .empty-state p {
+      font-size: 16px;
+      opacity: 0.7;
+    }
+    
+    .stats {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 30px;
+      backdrop-filter: blur(10px);
+      color: white;
+      text-align: center;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+    }
+    
+    .stat-item h3 {
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+    
+    .stat-item p {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📚 Artikel Tersimpan</h1>
+      <p>Koleksi artikel yang telah Anda simpan</p>
+    </div>
+    
+    <div class="stats" id="stats">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <h3 id="totalArticles">0</h3>
+          <p>Total Artikel</p>
+        </div>
+        <div class="stat-item">
+          <h3 id="totalReadingTime">0</h3>
+          <p>Menit Bacaan</p>
+        </div>
+        <div class="stat-item">
+          <h3 id="thisWeek">0</h3>
+          <p>Minggu Ini</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="search-bar">
+      <input 
+        type="text" 
+        class="search-input" 
+        id="searchInput" 
+        placeholder="🔍 Cari artikel berdasarkan judul atau konten..."
+      >
+    </div>
+    
+    <div class="articles-grid" id="articlesGrid">
+      <!-- Articles will be loaded here -->
+    </div>
+    
+    <div class="empty-state" id="emptyState" style="display: none;">
+      <h2>Belum ada artikel tersimpan</h2>
+      <p>Mulai simpan artikel menarik yang ingin Anda baca nanti!</p>
+    </div>
+  </div>
+  
+  <script src="saved-articles.js"></script>
+</body>
+</html>
